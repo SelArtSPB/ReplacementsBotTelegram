@@ -1,0 +1,194 @@
+{
+  "date": "2024-12-21",
+  "raw_date": "Замены суббота 21.12.24 нечетная",
+  "groups": {
+    "142": [
+      {
+        "pair": "5",
+        "original_subject": "Химия",
+        "teacher": "Скарбинская Н.П.",
+        "new_subject": "Индивидуальный проект",
+        "classroom": "ДО"
+      },
+      {
+        "pair": "6",
+        "original_subject": "Химия",
+        "teacher": "Скарбинская Н.П.",
+        "new_subject": "Индивидуальный проект",
+        "classroom": "ДО"
+      }
+    ],
+    "143": [
+      {
+        "pair": "3",
+        "original_subject": "Обществознание",
+        "teacher": "Перенос пары",
+        "new_subject": "",
+        "classroom": ""
+      },
+      {
+        "pair": "4",
+        "original_subject": "Обществознание",
+        "teacher": "Перенос пары",
+        "new_subject": "",
+        "classroom": ""
+      },
+      {
+        "pair": "7",
+        "original_subject": "",
+        "teacher": "Львова Т.В.",
+        "new_subject": "Обществознание",
+        "classroom": "206"
+      },
+      {
+        "pair": "8",
+        "original_subject": "",
+        "teacher": "Львова Т.В.",
+        "new_subject": "Обществознание",
+        "classroom": "206"
+      }
+    ],
+    "147": [
+      {
+        "pair": "3",
+        "original_subject": "История",
+        "teacher": "Львова Т.В.",
+        "new_subject": "Обществознание",
+        "classroom": "206"
+      },
+      {
+        "pair": "4",
+        "original_subject": "История",
+        "teacher": "Львова Т.В.",
+        "new_subject": "Обществознание",
+        "classroom": "206"
+      }
+    ],
+    "41": [
+      {
+        "pair": "3",
+        "original_subject": "Инженерная графика",
+        "teacher": "Отмена пары",
+        "new_subject": "",
+        "classroom": ""
+      },
+      {
+        "pair": "4",
+        "original_subject": "Инженерная графика",
+        "teacher": "Отмена пары",
+        "new_subject": "",
+        "classroom": ""
+      }
+    ],
+    "42": [
+      {
+        "pair": "9",
+        "original_subject": "",
+        "teacher": "Шавлюга Е.В.",
+        "new_subject": "Физкультура",
+        "classroom": "спортзал"
+      },
+      {
+        "pair": "10",
+        "original_subject": "",
+        "teacher": "Шавлюга Е.В.",
+        "new_subject": "Физкультура",
+        "classroom": "спортзал"
+      }
+    ],
+    "232": [
+      {
+        "pair": "1",
+        "original_subject": "МДК 01.01 Компьютерные сети",
+        "teacher": "Баженова Е.П.",
+        "new_subject": "История",
+        "classroom": "304"
+      },
+      {
+        "pair": "2",
+        "original_subject": "МДК 01.01 Компьютерные сети",
+        "teacher": "Баженова Е.П.",
+        "new_subject": "История",
+        "classroom": "304"
+      }
+    ],
+    "321": [
+      {
+        "pair": "3",
+        "original_subject": "",
+        "teacher": "Фомин А.В.",
+        "new_subject": "Основы алгоритмизации и прогр.",
+        "classroom": "108"
+      },
+      {
+        "pair": "4",
+        "original_subject": "",
+        "teacher": "Фомин А.В.",
+        "new_subject": "Основы алгоритмизации и прогр.",
+        "classroom": "108"
+      }
+    ],
+    "323": [
+      {
+        "pair": "5",
+        "original_subject": "Основы философии",
+        "teacher": "Фомин А.В.",
+        "new_subject": "МДК 01.03 Разработка мобильных приложений",
+        "classroom": "108"
+      },
+      {
+        "pair": "6",
+        "original_subject": "Основы философии",
+        "teacher": "Фомин А.В.",
+        "new_subject": "МДК 01.03 Разработка мобильных приложений",
+        "classroom": "108"
+      }
+    ],
+    "325": [
+      {
+        "pair": "7",
+        "original_subject": "Основы философии",
+        "teacher": "Анисифоров А.Б.",
+        "new_subject": "Компьютерные сети",
+        "classroom": "ДО"
+      },
+      {
+        "pair": "8",
+        "original_subject": "Основы философии",
+        "teacher": "Анисифоров А.Б.",
+        "new_subject": "Компьютерные сети",
+        "classroom": "ДО"
+      }
+    ],
+    "415": [
+      {
+        "pair": "3",
+        "original_subject": "Сертификация, стандартизация",
+        "teacher": "Симонов Д.И.",
+        "new_subject": "МДК 06.02",
+        "classroom": ""
+      },
+      {
+        "pair": "4",
+        "original_subject": "Стандартизаци, сертификация",
+        "teacher": "Симонов Д.И.",
+        "new_subject": "МДК 06.02",
+        "classroom": ""
+      },
+      {
+        "pair": "9",
+        "original_subject": "МДК 06.02",
+        "teacher": "Нефедова М.И.",
+        "new_subject": "Сертификация, стандартизация",
+        "classroom": "ДО"
+      },
+      {
+        "pair": "10",
+        "original_subject": "МДК 06.02",
+        "teacher": "Нефедова М.И.",
+        "new_subject": "Стандартизаци, сертификация",
+        "classroom": "ДО"
+      }
+    ]
+  }
+}
