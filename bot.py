@@ -4,6 +4,8 @@ import logging
 import time
 import threading
 from parser import get_replacements, save_to_json
+from datetime import datetime
+import os
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -12,6 +14,28 @@ logger = logging.getLogger(__name__)
 # Инициализация бота
 with open('bot_token.txt', 'r') as f:
     bot = telebot.TeleBot(f.read().strip())
+
+# Файл для хранения ID пользователей
+USERS_FILE = 'users.json'
+
+# Функция для загрузки списка пользователей
+def load_users():
+    try:
+        if os.path.exists(USERS_FILE):
+            with open(USERS_FILE, 'r') as f:
+                return json.load(f)
+        return []
+    except Exception as e:
+        logger.error(f"Ошибка при загрузке пользователей: {e}")
+        return []
+
+# Функция для сохранения списка пользователей
+def save_users(users):
+    try:
+        with open(USERS_FILE, 'w') as f:
+            json.dump(list(set(users)), f)  # Используем set для удаления дубликатов
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении пользователей: {e}")
 
 # Функция для чтения данных из JSON
 def read_replacements():
@@ -59,7 +83,7 @@ def group_replacements_by_pairs(replacements):
     for i in range(0, len(sorted_replacements), 2):
         # Получаем текущий урок
         current = sorted_replacements[i]
-        # Проверяем, есть ли следующий у��ок
+        # Проверяем, есть ли следующий урок
         next_lesson = sorted_replacements[i + 1] if i + 1 < len(sorted_replacements) else None
         
         # Если это последовательные уроки (например, 1-2, 3-4 и т.д.)
@@ -91,8 +115,14 @@ def get_main_keyboard():
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def start(message):
+    users = load_users()
+    if message.chat.id not in users:
+        users.append(message.chat.id)
+        save_users(users)
+        logger.info(f"Новый пользователь добавлен: {message.chat.id}")
+    
     bot.reply_to(message, 
-                 "Добро пожаловать! Выберите тип поиска замен:",
+                 "Добро пожаловать! Выберите тип поиска замен. Вы будете получать уведомления о новых заменах.",
                  reply_markup=get_main_keyboard())
 
 # Обработчик кнопки "Замена по группам"
@@ -181,7 +211,7 @@ def callback_handler(call):
         if data['raw_date']:
             response += f"📆 {data['raw_date']}\n\n"
         
-        # Собираем все замены для преподавателя
+        # Соираем все замены для преподавателя
         teacher_replacements = []
         for group_number, replacements in data['groups'].items():
             for replacement in replacements:
@@ -201,21 +231,85 @@ def callback_handler(call):
     bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, response)
 
+# Функция для отправки уведомлений всем пользователям
+def notify_users(new_data):
+    users = load_users()
+    date_str = new_data.get('raw_date', 'Неизвестная дата')
+    
+    # Формируем сообщение с кратким обзором замен
+    message = f"🔔 Обнаружены новые замены на {date_str}\n\n"
+    
+    # Добавляем список групп с заменами
+    groups = new_data.get('groups', {}).keys()
+    if groups:
+        message += "Замены есть для групп: " + ", ".join(sorted(groups, key=lambda x: int(x))) + "\n\n"
+        message += "Используйте меню бота для просмотра подробной информации."
+    
+    # Отправляем уведомление каждому пользователю
+    for user_id in users:
+        try:
+            bot.send_message(user_id, message, reply_markup=get_main_keyboard())
+            logger.info(f"Уведомление отправлено пользователю {user_id}")
+        except Exception as e:
+            logger.error(f"Ошибка отправки уведомления пользователю {user_id}: {e}")
+            # Если бот заблокирован или чат не найден, удаляем пользователя из списка
+            if "Forbidden" in str(e) or "chat not found" in str(e).lower():
+                users.remove(user_id)
+                logger.info(f"Пользователь {user_id} удален из списка рассылки")
+    
+    # Сохраняем обновленный список пользователей
+    save_users(users)
+
 # Функция для периодической проверки обновлений
 def check_updates():
     while True:
         try:
-            logger.info("Проверка обновлений...")
-            new_data = get_replacements()
-            if new_data and not isinstance(new_data, dict) or 'error' not in new_data:
-                current_data = read_replacements()
-                if current_data != new_data:
-                    save_to_json(new_data)
-                    logger.info("Данные обновлены")
+            current_time = datetime.now()
+            
+            # Проверяем, находимся ли мы в интервале 17-18 часов
+            if current_time.hour == 17:
+                # Получаем новые данные
+                new_data = get_replacements()
+                
+                if new_data and 'error' not in new_data:
+                    try:
+                        # Читаем текущие данные
+                        current_data = read_replacements()
+                        
+                        # Проверяем, изменилась ли дата
+                        new_date = new_data.get('date')
+                        current_date = current_data.get('date') if current_data else None
+                        
+                        # Если данные отличаются или файла нет
+                        if current_data != new_data:
+                            # Удаляем старый файл если он существует
+                            if os.path.exists('replacements.json'):
+                                os.remove('replacements.json')
+                            
+                            # Сохраняем новые данные
+                            save_to_json(new_data)
+                            logger.info("Обнаружены и сохранены новые данные замен")
+                            
+                            # Если дата изменилась, отправляем уведомления
+                            if new_date != current_date:
+                                notify_users(new_data)
+                                logger.info("Уведомления о новых заменах отправлены")
+                            
+                    except FileNotFoundError:
+                        # Если файла нет, сохраняем новые данные и отправляем уведомления
+                        save_to_json(new_data)
+                        notify_users(new_data)
+                        logger.info("Создан новый файл с данными замен и отправлены уведомления")
+                
+                # Ждем 20 минут перед следующей проверкой
+                time.sleep(20 * 60)
+            else:
+                # Если не в интервале 17-18, проверяем раз в 30 минут
+                time.sleep(30 * 60)
+                
         except Exception as e:
             logger.error(f"Ошибка при проверке обновлений: {e}")
-        
-        time.sleep(6 * 60 * 60)  # 6 часов
+            time.sleep(5 * 60)
 
 # Добавляем новый обработчик для кнопки "Очистить"
 @bot.message_handler(func=lambda message: message.text == "Очистить")
