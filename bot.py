@@ -332,6 +332,15 @@ def clear_chat(message):
     )
 
 if __name__ == '__main__':
+    # Запускаем парсер при старте бота
+    logger.info("Запуск парсера при старте бота")
+    new_data = get_replacements()
+    if new_data and 'error' not in new_data:
+        save_to_json(new_data)
+        logger.info("Начальные данные успешно получены и сохранены")
+    else:
+        logger.error("Не удалось получить начальные данные")
+
     # Запуск проверки обновлений в отдельном потоке
     update_thread = threading.Thread(target=check_updates)
     update_thread.daemon = True
